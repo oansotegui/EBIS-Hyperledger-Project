@@ -18,17 +18,27 @@
             }
         }
     },
-    "channels": {
-        "mychannel": {
-            "peers": {
-                "peer0.farmaceutica.farma.com": {},
-                "peer1.farmaceutica.farma.com": {},
-                "peer0.delivery.farma.com": {},
-                "peer0.logistica.farma.com": {},
-                "peer0.calidad.farma.com": {}
-            }
-        }
-    },
+	"channels": {
+		"farmachannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.logistica.farma.com": {},
+				"peer0.delivery.farma.com": {}
+			}
+		},
+		"ventaschannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.delivery.farma.com": {}
+			}
+		},
+		"calidadchannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.calidad.farma.com": {}
+			}
+		}
+	},	
     "organizations": {
         "FarmaceuticaMSP": {
             "mspid": "FarmaceuticaMSP",
