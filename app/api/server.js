@@ -5,11 +5,13 @@ const { connectToNetwork } = require('./fabric');
 
 app.use(express.json());
 
-app.get('/', (req, res) => {
+app.use(express.static('../frontend'));
+
+app.get('/api', (req, res) => {
     res.status(200).send('API de Hyperledger Fabric está funcionando.');
 });
 
-app.post('/createTransaccion', async (req, res) => {
+app.post('/api/createTransaccion', async (req, res) => {
     const { network, contract, gateway } = await connectToNetwork();
     try {
         const { id, sapid, cantidad, precio } = req.body;
@@ -23,7 +25,7 @@ app.post('/createTransaccion', async (req, res) => {
     }
 });
 
-app.get('/transaccion/:id', async (req, res) => {
+app.get('/api/transaccion/:id', async (req, res) => {
     const transaccionId = req.params.id;
     if (!transaccionId) {
         return res.status(400).json({ error: 'El ID de la transacción no puede estar vacío' });
