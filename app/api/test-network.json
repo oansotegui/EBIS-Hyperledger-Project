@@ -1,0 +1,133 @@
+{
+    "name": "fabric_farma",
+    "version": "1.0.0",
+    "client": {
+        "tlsEnable": true,
+        "adminCredential": {
+            "id": "apidmin",
+            "password": "apiadminpw"
+        },
+        "enableAuthentication": true,
+        "organization": "FarmaceuticaMSP",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "300"
+                },
+                "orderer": "300"
+            }
+        }
+    },
+	"channels": {
+		"farmachannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.logistica.farma.com": {},
+				"peer0.delivery.farma.com": {}
+			}
+		},
+		"ventaschannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.delivery.farma.com": {}
+			}
+		},
+		"calidadchannel": {
+			"peers": {
+				"peer0.farmaceutica.farma.com": {},
+				"peer0.calidad.farma.com": {}
+			}
+		}
+	},	
+    "organizations": {
+        "FarmaceuticaMSP": {
+            "mspid": "FarmaceuticaMSP",
+            "adminPrivateKey": {
+                "path": "../../organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp/keystore/priv_sk"
+            },
+            "peers": [
+                "peer0.farmaceutica.farma.com",
+                "peer1.farmaceutica.farma.com"
+            ],
+            "signedCert": {
+                "path": "../../organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp/signcerts/cert.pem"
+            }
+        },
+        "DeliveryMSP": {
+            "mspid": "DeliveryMSP",
+            "adminPrivateKey": {
+                "path": "../../organizations/peerOrganizations/delivery.farma.com/users/Admin@delivery.farma.com/msp/keystore/priv_sk"
+            },
+            "peers": [
+                "peer0.delivery.farma.com"
+            ],
+            "signedCert": {
+                "path": "../../organizations/peerOrganizations/delivery.farma.com/users/Admin@delivery.farma.com/msp/signcerts/cert.pem"
+            }
+        },
+        "LogisticaMSP": {
+            "mspid": "LogisticaMSP",
+            "adminPrivateKey": {
+                "path": "../../organizations/peerOrganizations/logistica.farma.com/users/Admin@logistica.farma.com/msp/keystore/priv_sk"
+            },
+            "peers": [
+                "peer0.logistica.farma.com"
+            ],
+            "signedCert": {
+                "path": "../../organizations/peerOrganizations/logistica.farma.com/users/Admin@logistica.farma.com/msp/signcerts/cert.pem"
+            }
+        },
+        "CalidadMSP": {
+            "mspid": "CalidadMSP",
+            "adminPrivateKey": {
+                "path": "../../organizations/peerOrganizations/calidad.farma.com/users/Admin@calidad.farma.com/msp/keystore/priv_sk"
+            },
+            "peers": [
+                "peer0.calidad.farma.com"
+            ],
+            "signedCert": {
+                "path": "../../organizations/peerOrganizations/calidad.farma.com/users/Admin@calidad.farma.com/msp/signcerts/cert.pem"
+            }
+        }
+    },
+    "peers": {
+        "peer0.farmaceutica.farma.com": {
+            "tlsCACerts": {
+                "path": "../../organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt"
+            },
+            "url": "grpcs://localhost:7051"
+        },
+        "peer1.farmaceutica.farma.com": {
+            "tlsCACerts": {
+                "path": "../../organizations/peerOrganizations/farmaceutica.farma.com/peers/peer1.farmaceutica.farma.com/tls/ca.crt"
+            },
+            "url": "grpcs://localhost:3051"
+        },
+        "peer0.delivery.farma.com": {
+            "tlsCACerts": {
+                "path": "../../organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt"
+            },
+            "url": "grpcs://localhost:2051"
+        },
+        "peer0.logistica.farma.com": {
+            "tlsCACerts": {
+                "path": "../../organizations/peerOrganizations/logistica.farma.com/peers/peer0.logistica.farma.com/tls/ca.crt"
+            },
+            "url": "grpcs://localhost:9051"
+        },
+        "peer0.calidad.farma.com": {
+            "tlsCACerts": {
+                "path": "../../organizations/peerOrganizations/calidad.farma.com/peers/peer0.calidad.farma.com/tls/ca.crt"
+            },
+            "url": "grpcs://localhost:11051"
+        }
+    },
+    "orderers": {
+        "orderer.farma.com": {
+            "url": "grpcs://localhost:7050",
+            "tlsCACerts": {
+                "path": "../../organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/tls/ca.crt"
+            }
+        }
+    }
+}
