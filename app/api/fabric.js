@@ -2,7 +2,7 @@ const { Gateway, Wallets } = require('fabric-network');
 const fs = require('fs');
 const path = require('path');
 
-async function connectToNetwork() {
+async function connectToNetwork(channelName, contractName) {
   const ccpPath = path.resolve(__dirname, 'test-network.json'); // Asegúrate de tener tu archivo de conexión
   const ccp = JSON.parse(fs.readFileSync(ccpPath, 'utf8'));
 
@@ -21,8 +21,8 @@ async function connectToNetwork() {
   await gateway.connect(ccp, { wallet, identity: 'Admin@farmaceutica.farma.com', discovery: { enabled: true, asLocalhost: true } });
 
   // Obtener el canal y el contrato
-  const network = await gateway.getNetwork('ventaschannel'); // Reemplaza 'miCanal' con tu canal real
-  const contract = network.getContract('ventas'); // Reemplaza 'miContrato' con tu contrato real
+  const network = await gateway.getNetwork(channelName);
+  const contract = network.getContract(contractName);
 
   console.log("Conexión a la red lista");
 

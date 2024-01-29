@@ -2,6 +2,11 @@
 
 ## CASO PRÁCTICO II: CREACIÓN DE UN PROYECTO DE TRAZABILIDAD DE FÁRMACOS
 
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+
 ### Configuración y Despliegue
 
 #### Crear Archivos de Configuración
@@ -118,6 +123,11 @@ peer channel join -b ./channel-artifacts/calidadchannel.block
 
 
 
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+
 # CHAINCODES
 # Ventas
 
@@ -199,69 +209,102 @@ peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.far
 peer chaincode query -C ventaschannel -n ventas -c '{"Args":["ReadTransaccion","T1"]}'
 
 
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
 
---> CHAINCODE DE TRAZABILIDAD
+# CHAINCODE DE TRAZABILIDAD
 
-cd ~/curso/chaincodes/farma/trazabilidad/go/
-go mod init trazabilidad.go 
+cd chaincode/trazabilidad/
+go mod init trazabilidad
+go mod tidy
 go mod vendor
 
-cd ~/curso
+
+cd ../..
 export PATH=${PWD}/../fabric-samples/bin:${PWD}:$PATH
 export FABRIC_CFG_PATH=${PWD}/../fabric-samples/config
 
 peer version
-peer lifecycle chaincode package trazabilidad.tar.gz --path chaincodes/farma/trazabilidad/go --lang golang --label trazabilidad_1.0
+peer lifecycle chaincode package trazabilidad.tar.gz --path ./chaincodes/trazabilidad --lang golang --label trazabilidad_1.0
 
+
+# Configurar Variables para la Organización Farmaceutica
 export CORE_PEER_TLS_ENABLED=true
 export CORE_PEER_LOCALMSPID="FarmaceuticaMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp
 export CORE_PEER_ADDRESS=localhost:7051
+
+# Instalar el Chaincode en el Peer de Farmaceutica
 peer lifecycle chaincode install trazabilidad.tar.gz
 
+# Exportar el ID del Chaincode Instalado
 peer lifecycle chaincode queryinstalled
 //copiar el ID del package, es una combinación del nombre del chaincode y el trazabilidad del contenido del código
 export CC_PACKAGE_ID=trazabilidad_1.0:011a2bb8c139dbf8ef3c5de4c07cca5a32210682e52049f36d32e5b080e6ab99
+
+# Aprobar el Chaincode en el Peer de Farmaceutica
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
 
 
+# Configurar Variables para la Organización Delivery
 export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt
 export CORE_PEER_LOCALMSPID="DeliveryMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/delivery.farma.com/users/Admin@delivery.farma.com/msp
 export CORE_PEER_ADDRESS=localhost:2051
+
+# Instalar el Chaincode en el Peer de Delivery
 peer lifecycle chaincode install trazabilidad.tar.gz
+
+# Aprobar el Chaincode en el Peer de Delivery
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
 
+# Configurar Variables para la Organización Logistica
 export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/logistica.farma.com/peers/peer0.logistica.farma.com/tls/ca.crt
 export CORE_PEER_LOCALMSPID="LogisticaMSP"
 export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
 export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/logistica.farma.com/users/Admin@logistica.farma.com/msp
 export CORE_PEER_ADDRESS=localhost:9051
+
+# Instalar el Chaincode en el Peer de Logistica
 peer lifecycle chaincode install trazabilidad.tar.gz
+
+# Aprobar el Chaincode en el Peer de Logistica
 peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
 
+
+# Verificar la Disponibilidad para el Commit
 peer lifecycle chaincode checkcommitreadiness --channelID farmachannel --name trazabilidad --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem --output json
 
+# Commit del Chaincode en el Canal
 peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt --peerAddresses localhost:2051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt
 
+# Consultar el Chaincode Comprometido
 peer lifecycle chaincode querycommitted --channelID farmachannel --name trazabilidad --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
 
-//probar el chaincode
+
+# probar el chaincode
 peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem -C farmachannel -n trazabilidad --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt -c '{"function":"initLedger","Args":[""]}'
 peer chaincode query -C farmachannel -n trazabilidad -c '{"Args":["GetAllFarmacos",""]}'
 
 
+# ###########################################################################################################################################
+# ###########################################################################################################################################
+# ###########################################################################################################################################
 
----> CHAINCODE DE CALIDAD
+
+# CHAINCODE DE CALIDAD
 # Navegar al directorio de los chaincodes de Calidad
-cd ~/curso/chaincodes/farma/calidad/go/
-go mod init calidad.go
+cd chaincode/calidad/
+go mod init calidad
+go mod tidy
 go mod vendor
 
 # Volver al directorio raíz del proyecto
-cd ~/curso
+cd ../..
 
 # Empaquetar el Chaincode de Calidad
 peer lifecycle chaincode package calidad.tar.gz --path chaincodes/farma/calidad/go --lang golang --label calidad_1.0
