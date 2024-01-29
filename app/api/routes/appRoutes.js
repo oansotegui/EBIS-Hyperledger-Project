@@ -19,8 +19,8 @@ router.delete('/trazabilidad/deleteFarmaco/:id', farmaController.deleteFarmaco);
 router.get('/trazabilidad/getAllFarmacos', farmaController.getAllFarmacos);
 router.get('/trazabilidad/getFarmacoHistory/:id', farmaController.getFarmacoHistory);
 
-
 // Rutas para Calidad
-
+router.post('/calidad/registrarInspeccion', calidadController.registrarInspeccion);
+router.get('/calidad/consultarInspeccion/:loteID', calidadController.consultarInspeccion);
 
 module.exports = router;

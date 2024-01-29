@@ -1,0 +1,121 @@
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    color: #333;
+}
+
+section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 20px;
+    width: 80%;
+    max-width: 500px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+input, button {
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    font-size: 1rem;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    border: none;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#ventasResponse, #calidadResponse, #trazabilidadResponse {
+    margin-top: 15px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+}
+
+#ventasResponse p, #calidadResponse p, #trazabilidadResponse p {
+    color: #333;
+}
+
+/* Reset básico para la lista */
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para la barra de navegación */
+nav {
+    background-color: #95c7f8; /* Color de fondo oscuro */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Sombra ligera para dar profundidad */
+    width: 100%; /* Asegura que la barra ocupe todo el ancho */
+}
+
+/* Estilos para los elementos de la lista */
+nav ul {
+    display: flex; /* Utiliza flexbox para un mejor control del layout */
+    justify-content: center; /* Centra los elementos de la lista horizontalmente */
+    align-items: center; /* Centra los elementos de la lista verticalmente */
+    height: 60px; /* Altura fija para la barra de navegación */
+    margin: 0; /* Remueve márgenes por defecto */
+    padding: 0; /* Remueve padding por defecto */
+}
+
+nav ul li {
+    margin: 0 20px; /* Espaciado horizontal entre elementos */
+}
+
+/* Estilos para los enlaces */
+nav ul li a {
+    color: #ecf0f1; /* Color claro para el texto */
+    text-decoration: none; /* Remover el subrayado del enlace */
+    padding: 10px 15px; /* Espaciado alrededor del texto */
+    border-radius: 5px; /* Bordes redondeados */
+    transition: background-color 0.3s; /* Transición suave para el hover */
+}
+
+/* Estilos para el enlace activo o en hover */
+nav ul li a:hover, nav ul li a.active {
+    background-color: #3498db; /* Color de fondo cuando se pasa el mouse o está activo */
+    color: white;
+}
+
+/* Estilo responsivo para la barra de navegación en pantallas pequeñas */
+@media (max-width: 600px) {
+    nav ul {
+        flex-direction: column; /* Los elementos se apilan verticalmente */
+    }
+    nav ul li {
+        margin: 10px 0; /* Espaciado vertical entre elementos */
+    }
+}
+
+
+.content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}

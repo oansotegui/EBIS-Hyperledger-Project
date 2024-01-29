@@ -2,20 +2,70 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Frontend para API de Hyperledger</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicación Blockchain</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
-    <h1>Interfaz para API de Hyperledger Fabric</h1>
+    <h1>Aplicación de Interfaz Blockchain</h1>
 
-    <!-- Formulario para enviar una transacción de lectura -->
-    <div>
-        <h2>Leer Transacción</h2>
-        <input type="text" id="readTransaccionId" placeholder="ID de Transacción">
-        <button onclick="readTransaccion()">Leer Transacción</button>
-        <p id="readResult"></p>
-    </div>
+    <nav>
+        <ul id="navBar">
+            <li><a href="#trazabilidad" data-section="trazabilidad">Trazabilidad</a></li>
+            <li><a href="#ventas" data-section="ventas">Ventas</a></li>
+            <li><a href="#calidad" data-section="calidad">Calidad</a></li>
+        </ul>
+    </nav>
 
-    <!-- Aquí puedes agregar más formularios para interactuar con otras operaciones de tu API -->
+    <!-- Sección de Trazabilidad -->
+    <section id="trazabilidad" class="content-section">
+        <h2>Trazabilidad</h2>
+        <form id="createFarmacoForm">
+            <!-- Campos para crear fármaco -->
+            <button type="submit" class="btn btn-primary">Crear Fármaco</button>
+        </form>
+
+        <form id="readFarmacoForm">
+            <input type="text" id="farmacoId" placeholder="ID del Fármaco">
+            <button type="submit" class="btn btn-primary">Leer Fármaco</button>
+        </form>
+
+        <div id="trazabilidadResponse"></div>
+    </section>
+
+    <!-- Sección de Ventas -->
+    <section id="ventas" class="content-section">
+        <h2>Ventas</h2>
+        <form id="createTransactionForm">
+            <input type="text" id="transactionId" placeholder="ID de la Transacción">
+            <input type="text" id="transactionData" placeholder="Datos de la Transacción">
+            <button type="submit" class="btn btn-primary">Crear Transacción</button>
+        </form>
+
+        <form id="getTransactionForm">
+            <input type="text" id="getTransactionId" placeholder="ID de la Transacción">
+            <button type="submit" class="btn btn-primary">Obtener Transacción</button>
+        </form>
+
+        <div id="ventasResponse"></div>
+    </section>
+
+    <!-- Sección de Calidad -->
+    <section id="calidad" class="content-section">
+        <h2>Control de Calidad</h2>
+        <form id="registrarInspeccionForm">
+            <!-- Campos para registrar inspección -->
+            <button type="submit" class="btn btn-primary">Registrar Inspección</button>
+        </form>
+
+        <form id="consultarInspeccionForm">
+            <input type="text" id="inspeccionId" placeholder="ID de Inspección">
+            <button type="submit" class="btn btn-primary">Consultar Inspección</button>
+        </form>
+
+        <div id="calidadResponse"></div>
+    </section>
 
     <script src="app.js"></script>
 </body>
