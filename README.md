@@ -10,6 +10,7 @@ Listado de software, herramientas y conocimientos previos necesarios para implem
 ### Arquitectura del Proyecto
 #### Pensar la Arquitectura
 Descripción de cómo estará organizada la red, incluyendo los nodos, organizaciones y roles dentro de la red de Hyperledger Fabric.
+![image](https://github.com/oansotegui/EBIS-Hyperledger-Project/assets/93701150/d6fbe348-7c2a-4459-8625-fb92d80c10a2)
 
 #### Definir la Lógica de Negocio
 Explicación de cómo funcionarán los procesos y transacciones dentro de la red.
