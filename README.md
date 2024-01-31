@@ -74,11 +74,16 @@ Interfaz de usuario para operar con la red de Hyperledger Fabric. En concreto es
 * ConsultarInspeccion: Obtiene los detalles de una inspección de calidad para un lote específico de fármacos.
 
 
-## Configuración y Despliegue
-Instrucciones paso a paso para configurar y desplegar la red de Hyperledger Fabric.
+## Configuración y Despliegue de la red
+Las siguientes instrucciones y comandos muestran paso a paso como configurar y desplegar la red de Hyperledger Fabric.
 
-1. **Crear Archivos de Configuración**
-   Detalles sobre la creación y estructura de los archivos de configuración necesarios.
+1. **Clonar el repositorio y navegar al directorio del proyecto**
+
+```bash
+git clone 
+cd ~/EBIS-Hyperledger-Project
+```
+
 
 2. **Gestión de Contenedores Docker**
    Comandos para detener, eliminar y preparar el entorno Docker para el proyecto.
@@ -95,7 +100,7 @@ Instrucciones paso a paso para configurar y desplegar la red de Hyperledger Fabr
 6. **Unir Peers a Canales y Configurar Anchor Peers**
    Instrucciones para unir los peers a los canales correspondientes y configurar los anchor peers.
 
-### Desarrollo y Despliegue de Chaincodes
+### Despliegue de Chaincodes
 #### Desarrollar los Chaincodes
 Explicación sobre cómo desarrollar los chaincodes específicos para ventas, trazabilidad y calidad, incluyendo la estructura de directorios y archivos.
 
@@ -105,14 +110,8 @@ Instrucciones detalladas para empaquetar, instalar y comprometer los chaincodes 
 #### Probar los Chaincodes
 Guía para realizar pruebas de invocación y consulta de los chaincodes para verificar su correcto funcionamiento.
 
-### Mantenimiento y Monitoreo
-Consejos sobre cómo mantener y monitorear la red una vez esté en funcionamiento.
-
-### Solución de Problemas
-Sección de preguntas frecuentes o problemas comunes y sus soluciones.
-
-### Contribuir
-Instrucciones para aquellos interesados en contribuir al proyecto.
+### Monitoreo
+Se levanta un dashboard de Hyperledger Explorer para monitorear la red una vez esté en funcionamiento.
 
 ### Licencia
 Detalles sobre la licencia del proyecto.
