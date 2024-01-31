@@ -78,44 +78,299 @@ Interfaz de usuario para operar con la red de Hyperledger Fabric. En concreto es
 Las siguientes instrucciones y comandos muestran paso a paso como configurar y desplegar la red de Hyperledger Fabric.
 
 1. **Clonar el repositorio y navegar al directorio del proyecto**
-
 ```bash
-git clone 
+git clone https://github.com/oansotegui/EBIS-Hyperledger-Project.git
 cd ~/EBIS-Hyperledger-Project
 ```
 
+2. **Limpiar el entorno de Contenedores Docker anteriores**
+```bash
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
+docker volume rm $(docker volume ls -q)
+docker volume prune -f
+docker network prune -f
+```
 
-2. **Gestión de Contenedores Docker**
-   Comandos para detener, eliminar y preparar el entorno Docker para el proyecto.
+3. **Eliminar directorios antiguos de configuraciones y crear nuevos.**
+```bash
+sudo rm -rf organizations/fabric-ca/farmaceutica/
+sudo rm -rf organizations/fabric-ca/calidad/ 
+sudo rm -rf organizations/fabric-ca/logistica/
+sudo rm -rf organizations/fabric-ca/delivery/
+sudo rm -rf organizations/fabric-ca/ordererOrg/
+sudo rm -rf organizations/peerOrganizations
+sudo rm -rf organizations/ordererOrganizations
+sudo rm -rf channel-artifacts/
+mkdir channel-artifacts
+```
 
-3. **Levantar Servicios con Docker Compose**
-   Instrucciones para levantar los servicios de CA y demás servicios utilizando Docker Compose.
+4. **Levantar los servicios definidos en el Docker Compose para la CA.**
+```bash
+docker-compose -f docker/docker-compose-farma-ca.yaml up -d
+```
 
-4. **Establecer Variables de Entorno y Generar Bloques de Génesis**
-   Guía sobre cómo establecer las variables de entorno necesarias y generar los bloques de génesis para los diferentes canales.
+5. **Establecer las variables de entorno necesarias para los binarios de Fabric**
+```bash
+export PATH=${PWD}/fabric-samples/bin:${PWD}:$PATH
+export FABRIC_CFG_PATH=${PWD}/configtx
+```
 
-5. **Registrar y Enrolar Organizaciones**
-   Procedimientos para registrar y enrolar las diferentes organizaciones en la red utilizando scripts.
+6. **Registrar y enrolar a las organizaciones**
+```bash
+. ./organizations/fabric-ca/registerEnrollFarma.sh && createFarmaceutica
+. ./organizations/fabric-ca/registerEnrollFarma.sh && createCalidad
+. ./organizations/fabric-ca/registerEnrollFarma.sh && createLogistica
+. ./organizations/fabric-ca/registerEnrollFarma.sh && createDelivery
+. ./organizations/fabric-ca/registerEnrollFarma.sh && createOrderer
+```
+7. **Copiar el archivo de configuración y generar bloques de génesis para canales.**
+```bash
+cp configtx/configtxFarma.yaml configtx/configtx.yaml  
+configtxgen -profile FarmaApplicationGenesis -outputBlock ./channel-artifacts/farmachannel.block -channelID farmachannel
+configtxgen -profile VentasGenesis -outputBlock ./channel-artifacts/ventaschannel.block -channelID ventaschannel
+configtxgen -profile CalidadGenesis -outputBlock ./channel-artifacts/calidadchannel.block -channelID calidadchannel
+export FABRIC_CFG_PATH=${PWD}/fabric-samples/config
+```  
+8. **Configurar el acceso a los certificados del ordenador.**
+```bash
+export ORDERER_CA=${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
+export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/tls/server.crt
+export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/tls/server.key
+```
 
-6. **Unir Peers a Canales y Configurar Anchor Peers**
-   Instrucciones para unir los peers a los canales correspondientes y configurar los anchor peers.
+9. **Levantar los peers y servicios adicionales definidos en el segundo Docker Compose.**
+```bash
+docker-compose -f docker/docker-compose-farma.yaml  up -d
+```
 
-### Despliegue de Chaincodes
-#### Desarrollar los Chaincodes
-Explicación sobre cómo desarrollar los chaincodes específicos para ventas, trazabilidad y calidad, incluyendo la estructura de directorios y archivos.
+10. **Unir los ordenadores a los canales utilizando la herramienta osnadmin.**
+```bash
+osnadmin channel join --channelID farmachannel --config-block ./channel-artifacts/farmachannel.block -o localhost:7053 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY"
+osnadmin channel join --channelID ventaschannel --config-block ./channel-artifacts/ventaschannel.block -o localhost:7053 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY"
+osnadmin channel join --channelID calidadchannel --config-block ./channel-artifacts/calidadchannel.block -o localhost:7053 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY"
+osnadmin channel list -o localhost:7053 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY"
+```
 
-#### Empaquetar, Instalar y Comprometer Chaincodes
-Instrucciones detalladas para empaquetar, instalar y comprometer los chaincodes en la red, asegurando su correcta ejecución.
+11. **Configurar TLS y variables de entorno para peer de Farmacéutica y unirse a los canales.**
+```bash
+export CORE_PEER_TLS_ENABLED=true
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="FarmaceuticaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+```
 
-#### Probar los Chaincodes
-Guía para realizar pruebas de invocación y consulta de los chaincodes para verificar su correcto funcionamiento.
+```bash
+peer channel join -b ./channel-artifacts/farmachannel.block
+peer channel join -b ./channel-artifacts/ventaschannel.block
+peer channel join -b ./channel-artifacts/calidadchannel.block
+```
 
-### Monitoreo
+12.  **Unir el peer1 de Farmacéutica a los canales.**
+```bash
+export PEER1_EMPRESA_CA=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer1.farmaceutica.farma.com/tls/ca.crt
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER1_EMPRESA_CA
+export CORE_PEER_LOCALMSPID="FarmaceuticaMSP"
+export CORE_PEER_ADDRESS=localhost:3051
+```
+
+```bash
+peer channel join -b ./channel-artifacts/farmachannel.block
+peer channel join -b ./channel-artifacts/ventaschannel.block
+peer channel join -b ./channel-artifacts/calidadchannel.block
+```
+
+ 13. **Establecer el peer0 de Farmacéutica como Anchor Peer.**
+```bash
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="FarmaceuticaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+```
+
+```bash
+peer channel fetch config channel-artifacts/config_block.pb -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com -c farmachannel --tls --cafile "$ORDERER_CA"
+```
+
+14. **Unir Logística, Delivery y Calidad a sus respectivos canales.**
+```bash
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/logistica.farma.com/peers/peer0.logistica.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="LogisticaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/logistica.farma.com/users/Admin@logistica.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:9051
+```
+
+```bash
+peer channel join -b ./channel-artifacts/farmachannel.block
+```
+
+```bash
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="DeliveryMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/delivery.farma.com/users/Admin@delivery.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:2051
+```
+
+```bash
+peer channel join -b ./channel-artifacts/farmachannel.block
+peer channel join -b ./channel-artifacts/ventaschannel.block
+```
+
+```bash
+export PEER0_CALIDAD_CA=${PWD}/organizations/peerOrganizations/calidad.farma.com/peers/peer0.calidad.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="CalidadMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_CALIDAD_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/calidad.farma.com/users/Admin@calidad.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:11051
+```
+
+```bash
+peer channel join -b ./channel-artifacts/calidadchannel.block
+```
+
+## Despliegue de Chaincodes
+Ponemos el ejemplo del chaincode de Trazabilidad. Se debe repetir los pasos con los chaincodes de Ventas y Calidad.Están todas las instrucciones y comandos en el fichero **script.txt**
+### CHAINCODE DE TRAZABILIDAD
+1. **Navegar al directorio del chaincode e iniciar el módulo**
+```bash
+cd chaincode/trazabilidad/
+go mod init trazabilidad
+go mod tidy
+go mod vendor
+```
+2. **Configurar el entorno**
+```bash
+cd ../..
+export PATH=${PWD}/../fabric-samples/bin:${PWD}:$PATH
+export FABRIC_CFG_PATH=${PWD}/../fabric-samples/config
+```
+3. **Empaqeutar el chaincode**
+```bash
+peer version
+peer lifecycle chaincode package trazabilidad.tar.gz --path ./chaincode/trazabilidad --lang golang --label trazabilidad_1.0
+```
+
+4. **Configurar Variables para la Organización Farmaceutica**
+```bash
+export CORE_PEER_TLS_ENABLED=true
+export CORE_PEER_LOCALMSPID="FarmaceuticaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/users/Admin@farmaceutica.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:7051
+```
+
+5. **Instalar el Chaincode en el Peer de Farmaceutica**
+```bash
+peer lifecycle chaincode install trazabilidad.tar.gz
+```
+
+6. **Exportar el ID del Chaincode Instalado**
+```bash
+peer lifecycle chaincode queryinstalled
+//copiar el ID del package, es una combinación del nombre del chaincode y el trazabilidad del contenido del código
+export CC_PACKAGE_ID=trazabilidad_1.0:7fdf764d2a7c490eae64202f68294a6091ce7f87029b3d1df8cfa4ce689f189d
+```
+
+7. **Aprobar el Chaincode en el Peer de Farmaceutica**
+```bash
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
+```
+
+8. **Configurar Variables para la Organización Delivery**
+```bash
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="DeliveryMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/delivery.farma.com/users/Admin@delivery.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:2051
+```
+
+9. **Instalar el Chaincode en el Peer de Delivery**
+```bash
+peer lifecycle chaincode install trazabilidad.tar.gz
+```
+
+10. **Aprobar el Chaincode en el Peer de Delivery**
+```bash
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
+```
+
+11. **Configurar Variables para la Organización Logistica**
+```bash
+export PEER0_EMPRESA_CA=${PWD}/organizations/peerOrganizations/logistica.farma.com/peers/peer0.logistica.farma.com/tls/ca.crt
+export CORE_PEER_LOCALMSPID="LogisticaMSP"
+export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_EMPRESA_CA
+export CORE_PEER_MSPCONFIGPATH=${PWD}/organizations/peerOrganizations/logistica.farma.com/users/Admin@logistica.farma.com/msp
+export CORE_PEER_ADDRESS=localhost:9051
+```
+
+12. **Instalar el Chaincode en el Peer de Logistica**
+```bash
+peer lifecycle chaincode install trazabilidad.tar.gz
+```
+
+13. **Aprobar el Chaincode en el Peer de Logistica**
+```bash
+peer lifecycle chaincode approveformyorg -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --package-id $CC_PACKAGE_ID --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
+```
+
+14. **Verificar la Disponibilidad para el Commit**
+```bash
+peer lifecycle chaincode checkcommitreadiness --channelID farmachannel --name trazabilidad --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem --output json
+```
+
+15. **Commit del Chaincode en el Canal**
+```bash
+peer lifecycle chaincode commit -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --channelID farmachannel --name trazabilidad --signature-policy "OR('FarmaceuticaMSP.member','DeliveryMSP.member','LogisticaMSP.member')" --version 1.0 --sequence 1 --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt --peerAddresses localhost:2051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/delivery.farma.com/peers/peer0.delivery.farma.com/tls/ca.crt
+```
+
+16. **Consultar el Chaincode Comprometido**
+```bash
+peer lifecycle chaincode querycommitted --channelID farmachannel --name trazabilidad --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem
+```
+
+17. **Probar el Chaincode**
+```bash
+peer chaincode invoke -o localhost:7050 --ordererTLSHostnameOverride orderer.farma.com --tls --cafile ${PWD}/organizations/ordererOrganizations/farma.com/orderers/orderer.farma.com/msp/tlscacerts/tlsca.farma.com-cert.pem -C farmachannel -n trazabilidad --peerAddresses localhost:7051 --tlsRootCertFiles ${PWD}/organizations/peerOrganizations/farmaceutica.farma.com/peers/peer0.farmaceutica.farma.com/tls/ca.crt -c '{"function":"initLedger","Args":[""]}'
+peer chaincode query -C farmachannel -n trazabilidad -c '{"Args":["GetAllFarmacos",""]}'
+```
+
+## Monitoreo
 Se levanta un dashboard de Hyperledger Explorer para monitorear la red una vez esté en funcionamiento.
+1. **Copiar la carpeta /organizations al directorio del explorer**
+```bash
+cd explorer
+cp -r ../organizations .
+```
+2. **Arrancar los servicios y contenedores**
+```bash
+docker-compose up -d
+```
+3. **Acceder al dashboard del Explorer**
 
-### Licencia
+Se habrá levantado correctamente el servicio en [http://localhost:8080](http://localhost:8080)
+
+4. **Autenticarse**
+
+Por defecto al levantar el docker-compose se establece:
+* User: exploreradmin
+* Password: exploreradminpw
+Puedes modificar el docker-compose si deseas cambiar los datos de autenticación.
+
+
+## Despliegue de Frontend y APIs
+
+
+
+## Licencia
 Detalles sobre la licencia del proyecto.
 
-### Contacto
+
+## Contacto
 Información de contacto para soporte o colaboraciones.
 
