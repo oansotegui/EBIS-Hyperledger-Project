@@ -272,8 +272,12 @@ peer lifecycle chaincode install trazabilidad.tar.gz
 6. **Exportar el ID del Chaincode Instalado**
 ```bash
 peer lifecycle chaincode queryinstalled
-//copiar el ID del package, es una combinación del nombre del chaincode y el trazabilidad del contenido del código
-export CC_PACKAGE_ID=trazabilidad_1.0:7fdf764d2a7c490eae64202f68294a6091ce7f87029b3d1df8cfa4ce689f189d
+```
+
+//copiar el ID del package, es una combinación del nombre del chaincode y el trazabilidad del contenido del código, tipo: trazabilidad_1.0:7fdf764d2a7c490eae64202f68294a6091ce7f87029b3d1df8cfa4ce689f189d 
+
+```bash
+export CC_PACKAGE_ID=<SUSTITUIR AQUI>
 ```
 
 7. **Aprobar el Chaincode en el Peer de Farmaceutica**
