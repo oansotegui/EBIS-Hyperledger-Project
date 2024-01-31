@@ -376,12 +376,20 @@ cd app/api
 ```bash
 npm install
 ```
-3. **Arrancar el servidor**
+3. **Recopilar Credenciales de Acceso**
+Para operar desde el frontend es necesario firmar las transacciones con las credenciales de alguno de los usuarios registrados y enrolados en la red. Como antes hemos creado usuarios Admin y User1 para cada una de las organizaciones, y dado que este es el frontend de Farmacéutica, vamos a usar las credenciales del Admin de Farmacéutica.
+Para ello añadimos las credenciales al directorio /wallet mediante el siguiente script:
+
+```bash
+node addToWallet.js
+```
+
+4. **Arrancar el servidor**
 Se ha configurado para que se monte el frontend sobre la API, por lo que basta con ejecutar el siguiente comando:
 ```bash
 node server.js
 ```
-4. **Accede al frontend**
+5. **Accede al frontend**
 
 Se habrá levantado correctamente el servicio en [http://localhost:3000](http://localhost:3000)
 
