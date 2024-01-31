@@ -5,8 +5,6 @@ const calidadController = require('../controllers/calidadController');
 const farmaController = require('../controllers/farmaController');
 const ventasController = require('../controllers/ventasController');
 
-/////////////////// CAMBIAR ////////////////
-
 // Rutas para Ventas
 router.post('/ventas/createTransaction', ventasController.createTransaction);
 router.get('/ventas/getTransaction/:id', ventasController.getTransaction);

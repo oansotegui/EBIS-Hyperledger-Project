@@ -4,7 +4,7 @@ const { connectToNetwork } = require('../fabric');
 const farmaController = {};
 
 farmaController.createFarmaco = async (req, res) => {
-    const { network, contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
         const { ph, temperature, user, geo, estado, extradata } = req.body;
         await contract.submitTransaction('CreateFarmaco', ph, temperature.toString(), user, geo, estado, extradata);
@@ -21,9 +21,8 @@ farmaController.readFarmaco = async (req, res) => {
     if (!farmacoId) {
         return res.status(400).json({ error: 'El ID del fármaco no puede estar vacío' });
     }
-
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
-        const { contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
         const farmacoResponse = await contract.evaluateTransaction('ReadFarmaco', farmacoId);
         const farmaco = JSON.parse(farmacoResponse.toString());
 
@@ -41,9 +40,8 @@ farmaController.readFarmaco = async (req, res) => {
 farmaController.updateFarmaco = async (req, res) => {
     const farmacoId = req.params.id;
     const { ph, temperature, user, geo, estado, extradata } = req.body;
-
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
-        const { contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
         await contract.submitTransaction('UpdateFarmaco', farmacoId, ph, temperature.toString(), user, geo, estado, extradata);
         res.status(200).json({ result: 'Fármaco actualizado con éxito' });
     } catch (error) {
@@ -55,9 +53,8 @@ farmaController.updateFarmaco = async (req, res) => {
 
 farmaController.deleteFarmaco = async (req, res) => {
     const farmacoId = req.params.id;
-
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
-        const { contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
         await contract.submitTransaction('DeleteFarmaco', farmacoId);
         res.status(200).json({ result: 'Fármaco eliminado con éxito' });
     } catch (error) {
@@ -68,8 +65,8 @@ farmaController.deleteFarmaco = async (req, res) => {
 };
 
 farmaController.getAllFarmacos = async (req, res) => {
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
-        const { contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
         const allFarmacosResponse = await contract.evaluateTransaction('GetAllFarmacos');
         const allFarmacos = JSON.parse(allFarmacosResponse.toString());
 
@@ -86,9 +83,8 @@ farmaController.getAllFarmacos = async (req, res) => {
 
 farmaController.getFarmacoHistory = async (req, res) => {
     const farmacoId = req.params.id;
-
+    const { network, contract, gateway } = await connectToNetwork("farmachannel", "trazabilidad");
     try {
-        const { contract, gateway } = await connectToNetwork("trazabilidadChannel", "trazabilidad");
         const farmacoHistoryResponse = await contract.evaluateTransaction('GetFarmacoHistory', farmacoId);
         const farmacoHistory = JSON.parse(farmacoHistoryResponse.toString());
 

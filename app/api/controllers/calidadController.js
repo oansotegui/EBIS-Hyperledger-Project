@@ -4,7 +4,7 @@ const { connectToNetwork } = require('../fabric');
 const calidadController = {};
 
 calidadController.registrarInspeccion = async (req, res) => {
-    const { network, contract, gateway } = await connectToNetwork("calidadChannel", "calidad");
+    const { network, contract, gateway } = await connectToNetwork("calidadchannel", "calidad");
     try {
         const { loteID, fechaInspeccion, resultado, comentarios, inspector } = req.body;
         await contract.submitTransaction('RegistrarInspeccion', loteID, fechaInspeccion, resultado, comentarios, inspector);
@@ -21,9 +21,8 @@ calidadController.consultarInspeccion = async (req, res) => {
     if (!loteID) {
         return res.status(400).json({ error: 'El ID del lote no puede estar vacío' });
     }
-
+    const { network, contract, gateway } = await connectToNetwork("calidadchannel", "calidad");
     try {
-        const { contract, gateway } = await connectToNetwork("calidadChannel", "calidad");
         const inspeccionResponse = await contract.evaluateTransaction('ConsultarInspeccion', loteID);
         const inspeccion = JSON.parse(inspeccionResponse.toString());
 

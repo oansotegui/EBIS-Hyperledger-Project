@@ -21,50 +21,95 @@
     <!-- Sección de Trazabilidad -->
     <section id="trazabilidad" class="content-section">
         <h2>Trazabilidad</h2>
-        <form id="createFarmacoForm">
-            <!-- Campos para crear fármaco -->
-            <button type="submit" class="btn btn-primary">Crear Fármaco</button>
-        </form>
+        <div class="grid-container">
+            <div class="form">
+                <form id="createFarmacoForm">
+                    <input type="text" id="ph" placeholder="PH" required>
+                    <input type="number" id="temperature" placeholder="Temperatura" required>
+                    <input type="text" id="user" placeholder="Usuario" required>
+                    <input type="text" id="geo" placeholder="Geo" required>
+                    <input type="text" id="estado" placeholder="Estado" required>
+                    <input type="text" id="extradata" placeholder="Datos Extra">
+                    <button type="submit" class="btn btn-primary">Crear Fármaco</button>
+                </form>
+    
+                <form id="readFarmacoForm">
+                    <input type="text" id="readFarmacoId" placeholder="ID del Fármaco">
+                    <button type="submit" class="btn btn-primary">Leer Fármaco</button>
+                </form>
+    
+                <form id="updateFarmacoForm">
+                    <input type="text" id="updateFarmacoId" placeholder="ID del Fármaco">
+                    <input type="text" id="ph" placeholder="PH" required>
+                    <input type="number" id="temperature" placeholder="Temperatura" required>
+                    <input type="text" id="user" placeholder="Usuario" required>
+                    <input type="text" id="geo" placeholder="Geo" required>
+                    <input type="text" id="estado" placeholder="Estado" required>
+                    <input type="text" id="extradata" placeholder="Datos Extra">
+                    <button type="submit" class="btn btn-primary">Actualizar Fármaco</button>
+                </form>
+    
+                <form id="deleteFarmacoForm">
+                    <input type="text" id="deleteFarmacoId" placeholder="ID del Fármaco">
+                    <button type="submit" class="btn btn-primary">Eliminar Fármaco</button>
+                </form>
+    
+                <form id="getFarmacoHistoryForm">
+                    <input type="text" id="historyFarmacoId" placeholder="ID del Fármaco para Historial">
+                    <button type="submit" class="btn btn-primary">Obtener Historial de Fármaco</button>
+                </form>
 
-        <form id="readFarmacoForm">
-            <input type="text" id="farmacoId" placeholder="ID del Fármaco">
-            <button type="submit" class="btn btn-primary">Leer Fármaco</button>
-        </form>
-
-        <div id="trazabilidadResponse"></div>
+                <form>
+                    <button id="getAllFarmacosButton" class="btn btn-primary">Obtener Todos los Fármacos</button>
+                </form>
+            </div>
+            <div id="trazabilidadResponse"></div>
+        </div>
     </section>
 
     <!-- Sección de Ventas -->
     <section id="ventas" class="content-section">
         <h2>Ventas</h2>
-        <form id="createTransactionForm">
-            <input type="text" id="transactionId" placeholder="ID de la Transacción">
-            <input type="text" id="transactionData" placeholder="Datos de la Transacción">
-            <button type="submit" class="btn btn-primary">Crear Transacción</button>
-        </form>
-
-        <form id="getTransactionForm">
-            <input type="text" id="getTransactionId" placeholder="ID de la Transacción">
-            <button type="submit" class="btn btn-primary">Obtener Transacción</button>
-        </form>
-
-        <div id="ventasResponse"></div>
+        <div class="grid-container">
+            <div class="form">
+                <form id="createTransactionForm">
+                    <input type="text" id="transactionId" placeholder="ID de la Transacción">
+                    <input type="text" id="sap" placeholder="Identificador SAP">
+                    <input type="text" id="cantidad" placeholder="Unidades de Fármaco a vender">
+                    <input type="text" id="precio" placeholder="Precio por unidad">
+                    <button type="submit" class="btn btn-primary">Crear Transacción</button>
+                </form>
+    
+                <form id="getTransactionForm">
+                    <input type="text" id="getTransactionId" placeholder="ID de la Transacción">
+                    <button type="submit" class="btn btn-primary">Obtener Transacción</button>
+                </form>
+            </div>
+            <div id="ventasResponse"></div>
+        </div>
     </section>
 
     <!-- Sección de Calidad -->
     <section id="calidad" class="content-section">
         <h2>Control de Calidad</h2>
-        <form id="registrarInspeccionForm">
-            <!-- Campos para registrar inspección -->
-            <button type="submit" class="btn btn-primary">Registrar Inspección</button>
-        </form>
-
-        <form id="consultarInspeccionForm">
-            <input type="text" id="inspeccionId" placeholder="ID de Inspección">
-            <button type="submit" class="btn btn-primary">Consultar Inspección</button>
-        </form>
-
-        <div id="calidadResponse"></div>
+        <div class="grid-container">
+            <div class="form">
+                <form id="registrarInspeccionForm">
+                    <input type="text" id="loteID" placeholder="ID de la Inspección">
+                    <input type="text" id="fechaInspeccion" placeholder="Fecha de la Inspección">
+                    <input type="text" id="resultado" placeholder="Resultado">
+                    <input type="text" id="comentarios" placeholder="Comentarios">
+                    <input type="text" id="inspector" placeholder="Inspector">
+                    <button type="submit" class="btn btn-primary">Registrar Inspección</button>
+                </form>
+    
+                <form id="consultarInspeccionForm">
+                    <input type="text" id="inspeccionId" placeholder="ID de Inspección">
+                    <button type="submit" class="btn btn-primary">Consultar Inspección</button>
+                </form>
+            </div>
+            <div id="calidadResponse"></div>
+        </div>
     </section>
 
     <script src="app.js"></script>

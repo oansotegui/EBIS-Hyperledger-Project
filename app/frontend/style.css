@@ -14,12 +14,12 @@ h1 {
 
 section {
     background: white;
+    grid-template-columns: 1fr 1fr; /* Divide el espacio en dos columnas iguales */
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     margin: 20px;
     width: 80%;
-    max-width: 500px;
 }
 
 form {
@@ -52,10 +52,12 @@ button:hover {
     border-radius: 5px;
     background-color: #f8f8f8;
     border: 1px solid #ddd;
+    height: auto;
 }
 
 #ventasResponse p, #calidadResponse p, #trazabilidadResponse p {
     color: #333;
+    height: auto;
 }
 
 /* Reset básico para la lista */
@@ -101,21 +103,72 @@ nav ul li a:hover, nav ul li a.active {
     color: white;
 }
 
-/* Estilo responsivo para la barra de navegación en pantallas pequeñas */
-@media (max-width: 600px) {
-    nav ul {
-        flex-direction: column; /* Los elementos se apilan verticalmente */
-    }
-    nav ul li {
-        margin: 10px 0; /* Espaciado vertical entre elementos */
-    }
+
+.response-array {
+    border: 1px solid #ddd;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
 }
 
-
-.content-section {
-    display: none;
+.array-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
 }
 
+.array-item:last-child {
+    margin-bottom: 0; /* Remueve el margen del último elemento */
+}
+
+.response-object p, .response-array > .response-primitive {
+    margin: 5px 0;
+    color: #333;
+}
+
+.response-object p strong {
+    color: #2c3e50;
+}
+
+/* Estilos adicionales para los formularios individuales */
+form {
+    margin-bottom: 20px; /* Esto separará cada formulario */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #fff;
+}
+
+/* Este estilo se aplica a todas las secciones de contenido cuando están activas */
 .content-section.active {
-    display: block;
+    display: grid; /* Usa CSS Grid */
+    grid-template-columns: 1fr 1fr; /* Divide el espacio en dos columnas iguales */
+    justify-content: space-between; /* Espacio distribuido uniformemente */
+    align-items: flex-start; /* Alinea los elementos al inicio del contenedor */
+    width: 75%; /* Usa el 100% del ancho de la ventana */
+    padding: 20px; /* Agrega algo de padding interno */
+}
+
+/* Los contenedores de formularios y respuesta ahora son flex-items */
+.forms, #trazabilidadResponse, #ventasResponse, #calidadResponse {
+    flex: 1; /* Cada uno tomará una parte igual del espacio disponible */
+    margin: 10px; /* Añade un poco de margen entre ellos */
+}
+
+/* Estilos específicos para el contenedor de respuesta */
+#trazabilidadResponse, #ventasResponse, #calidadResponse {
+    padding: 10px;
+    border-radius: 5px;
+    background-color: #f8f8f8;
+    border: 1px solid #ddd;
+    overflow-y: auto; /* Permite el desplazamiento si hay mucho contenido */
+    min-height: 200px; /* Altura automática basada en el contenido */
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Dos columnas de igual ancho */
+    gap: 20px; /* Espacio entre las columnas */
 }
