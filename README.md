@@ -363,14 +363,29 @@ Por defecto al levantar el docker-compose se establece:
 Puedes modificar el docker-compose si deseas cambiar los datos de autenticación.
 
 
-## Despliegue de Frontend y APIs
+## Despliegue de Frontend y APIs**
+1. **Navegar al directorio
+```bash
+cd app/api
+```
+2. **Instalar dependencias y preparar entorno**
+```bash
+npm install
+```
+3. **Arrancar el servidor**
+Se ha configurado para que se monte el frontend sobre la API, por lo que basta con ejecutar el siguiente comando:
+```bash
+node server.js
+```
+4. **Accede al frontend**
 
-
+Se habrá levantado correctamente el servicio en [http://localhost:3000](http://localhost:3000)
 
 ## Licencia
-Detalles sobre la licencia del proyecto.
+Licencia MIT [Detalles sobre la licencia del proyecto.](https://choosealicense.com/licenses/mit/)
 
 
 ## Contacto
-Información de contacto para soporte o colaboraciones.
+Github user: @oansotegui
+mail: oscaransotegui@gmail.com
 
