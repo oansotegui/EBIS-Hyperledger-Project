@@ -1,27 +1,80 @@
-# EBIS-Hyperledger-Project
-## Proyecto de Trazabilidad de Medicamentos en una Supply Chain Farmacéutica
+# EBIS-Hyperledger-Project: Proyecto de Trazabilidad de Medicamentos en una Supply Chain Farmacéutica
 
-### Introducción
-Breve descripción del proyecto y objetivos del sistema de trazabilidad de fármacos.
+## Introducción
+Este proyecto utiliza la tecnología de Hyperledger Fabric para crear un sistema de trazabilidad de medicamentos dentro de una cadena de suministro farmacéutica. Su objetivo es aumentar la transparencia y eficiencia en el seguimiento de los medicamentos desde su producción hasta la entrega al consumidor final, asegurando la autenticidad y la calidad del producto. De esta manera se consigue: 
+* Seguimiento de los productos en toda la cadena
+* Verificación y autenticación de los productos de la cadena
+* Compartir la información de toda la cadena entre los agentes de la cadena de suministro 
+* Mejorar la auditabilidad
 
-### Requisitos Previos
-Listado de software, herramientas y conocimientos previos necesarios para implementar el proyecto.
+## Requisitos Previos
+Para implementar este proyecto se requiere:
+* Docker y Docker Compose.
+* Conocimientos de Hyperledger Fabric.
+* Go para el desarrollo de chaincodes
+* Familiaridad con el desarrollo de aplicaciones con Node.js (APIS y aplicaciones web).
 
-### Arquitectura del Proyecto
-#### Pensar la Arquitectura
-Descripción de cómo estará organizada la red, incluyendo los nodos, organizaciones y roles dentro de la red de Hyperledger Fabric.
+## Arquitectura del Proyecto
+La siguiente imagen muestra cómo estará organizada la red, incluyendo los nodos, organizaciones y roles dentro de la red de Hyperledger Fabric.
+
 ![image](https://github.com/oansotegui/EBIS-Hyperledger-Project/assets/93701150/d6fbe348-7c2a-4459-8625-fb92d80c10a2)
 
-#### Definir la Lógica de Negocio
-Explicación de cómo funcionarán los procesos y transacciones dentro de la red.
+La arquitectura de este proyecto se compone de:
 
-#### Pensar la Lógica - Smart Contract
-Detalles sobre los contratos inteligentes que serán implementados, incluyendo sus funciones y cómo interactúan con la red.
+1. Organizaciones y sus CAs:
+Cuatro organizaciones: Farmacéutica, Calidad, Logística y Delivery.
+Cada organización tendría su propia Autoridad de Certificación (CA).
+Las CAs estarían conectadas a sus respectivos peers.
 
-#### Conectar a la Aplicación Web o Construir la Aplicación Web
-Información sobre la integración con aplicaciones web existentes o instrucciones para desarrollar una nueva interfaz de usuario.
+2. Peers:
+La distribución de peers de las organizaciones es la siguiente: 
+* Farmacéutica tiene dos peers (peer0 y peer1, siendo peer0 el anchor peer).
+* Calidad, Logística y Delivery tienen un peer cada uno (peer0).
 
-### Configuración y Despliegue
+4. Canales:
+Tres canales: farmachannel, ventaschannel y calidadchannel.
+* Peer0 y peer1 de Farmacéutica se unen a los tres canales.
+* Peer0 de Logística y Delivery se unen a farmachannel y ventaschannel.
+* Peer0 de Calidad se une solo a calidadchannel.
+
+5. Chaincodes
+* trazabilidad.go (en farmachannel)
+* ventas.go (en ventaschannel)
+* calidad.go (en calidadchannel)
+
+6. Orderer:
+Un nodo orderer estaría presente para el consenso y la formación de bloques.
+Este nodo estaría conectado a todos los canales.
+
+8. APIs
+Conexión del frontend con la red de Hyperledger Fabric.
+Las transacciones se ejecutan con las credenciales y certificados del Admin de la organización Farmacéutica.
+
+9. Frontend
+Interfaz de usuario para operar con la red de Hyperledger Fabric. En concreto está pensado como panel de control de la organización Farmacéutica.
+
+## Especificación de los Chaincodes
+
+#### Trazabilidad.go
+* CreateFarmaco: Crea un nuevo registro de fármaco en el ledger con atributos únicos y lo identifica con un UUID generado.
+* ReadFarmaco: Recupera los detalles de un fármaco específico del ledger usando su ID.
+* UpdateFarmaco: Actualiza los atributos de un fármaco existente en el ledger.
+* DeleteFarmaco: Elimina un fármaco del ledger basado en su ID.
+* GetAllFarmacos: Devuelve una lista de todos los fármacos registrados en el ledger.
+* GetFarmacoHistory: Proporciona el historial de transacciones para un fármaco específico, mostrando cómo han cambiado sus atributos a lo largo del tiempo.
+
+#### Ventas.go
+* CreateTransaccion: Registra una nueva transacción de venta en el ledger.
+* ReadTransaccion: Obtiene los detalles de una transacción de venta específica del ledger.
+* TransaccionExists: Comprueba si una transacción de venta específica existe en el ledger.
+* GetAllTransaccions: Recupera todas las transacciones de venta del ledger.
+
+#### Calidad.go
+* RegistrarInspeccion: Agrega una nueva inspección de calidad al ledger con detalles como la fecha de inspección, el resultado, comentarios y el ID del inspector.
+* ConsultarInspeccion: Obtiene los detalles de una inspección de calidad para un lote específico de fármacos.
+
+
+## Configuración y Despliegue
 Instrucciones paso a paso para configurar y desplegar la red de Hyperledger Fabric.
 
 1. **Crear Archivos de Configuración**
