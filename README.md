@@ -17,7 +17,8 @@ Para implementar este proyecto se requiere:
 ## Arquitectura del Proyecto
 La siguiente imagen muestra cómo estará organizada la red, incluyendo los nodos, organizaciones y roles dentro de la red de Hyperledger Fabric.
 
-![image](https://github.com/oansotegui/EBIS-Hyperledger-Project/assets/93701150/d6fbe348-7c2a-4459-8625-fb92d80c10a2)
+![image](https://github.com/oansotegui/EBIS-Hyperledger-Project/assets/93701150/9883ddcf-0646-45e5-a76c-e2cfb6bd7182)
+
 
 La arquitectura de este proyecto se compone de:
 
