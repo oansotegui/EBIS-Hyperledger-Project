@@ -247,8 +247,8 @@ go mod vendor
 2. **Configurar el entorno**
 ```bash
 cd ../..
-export PATH=${PWD}/../fabric-samples/bin:${PWD}:$PATH
-export FABRIC_CFG_PATH=${PWD}/../fabric-samples/config
+export PATH=${PWD}/fabric-samples/bin:${PWD}:$PATH
+export FABRIC_CFG_PATH=${PWD}/fabric-samples/config
 ```
 3. **Empaqeutar el chaincode**
 ```bash
